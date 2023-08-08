@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import type { PassengerItem } from '@/passenger'
 import type { PropType } from 'vue';
-const props = defineProps({
+defineProps({
     passenger: {
         type: Object as PropType<PassengerItem>,
             require: true

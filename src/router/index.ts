@@ -1,12 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import PassengerListView from '../views/PassengerListView.vue'
-import AirlineDetailView from '../views/passenger/AirlineDetailView.vue'
+import PassengerAirlineView from '../views/passenger/AirlineDetailView.vue'
 import PassengerDetailView from '../views/passenger/PassengerDetailView.vue'
 import PassengerLayoutView from '../views/passenger/PassengerLayoutView.vue'
-import NotFoundView from '../views/NotFoundView.vue'
-import NetWorkErrorView from '../views/NetWorkErrorView.vue'
-
-
+import NotFoundView from '@/views/NotFoundView.vue'
+import NetworkErrorView from '@/views/NetWorkErrorView.vue'
+import NProgress from 'nprogress'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -14,19 +13,13 @@ const router = createRouter({
       path: '/',
       name: 'passenger-list',
       component: PassengerListView,
-      props: (route) => ({
-        page: parseInt((route.query?.page as string) || '1')
-      })
+      props: (route) => ({ page: parseInt(route.query?.page as string || '1') })
     },
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue')
     },
-
     {
       path: '/passenger/:id',
       name: 'passenger-layout',
@@ -34,24 +27,24 @@ const router = createRouter({
       props: true,
       children: [
         {
-          path: '/passenger/:id',
+          path: '',
           name: 'passenger-detail',
           component: PassengerDetailView,
           props: true
         },
         {
-          path: '/passenger/:id/airline',
+          path: 'airline',
           name: 'passenger-airline',
-          component: AirlineDetailView,
-          props: true
-        },
+          props: true,
+          component: PassengerAirlineView
+        }
       ]
     },
     {
       path: '/404/:resource',
       name: '404-resource',
       component: NotFoundView,
-      props: true
+      props:true
     },
     {
       path: '/:catchAll(.*)',
@@ -61,9 +54,23 @@ const router = createRouter({
     {
       path: '/network-error',
       name: 'network-error',
-      component: NetWorkErrorView
+      component: NetworkErrorView
     }
-  ]
+  ],
+scrollBehavior(to, from, savedPosition) {
+  if (savedPosition) {
+    return savedPosition
+  } else {
+    return { top: 0}
+  }
+}
+})
+router.beforeEach(()=>{
+  NProgress.start()
+})
+
+router.afterEach(()=>{
+  NProgress.done()
 })
 
 export default router

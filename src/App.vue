@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import { storeToRefs } from 'pinia';
+import { useMessageStore } from './stores/message';
+const store = useMessageStore()
+const { message } = storeToRefs(store)
 </script>
 
 <template>
   <header>
-
+    <div id="flashMessage" v-if="message">
+      <h4>{{  message  }}</h4>
+    </div>
     <div class="wrapper">
-
+      
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
@@ -78,5 +84,23 @@ nav a:first-of-type {
     padding: 1rem 0;
     margin-top: 1rem;
   }
+  
+}
+h4{
+  font-size: 20px;
+}
+
+@keyframes yellowfade{
+  from{
+    background: yellow;
+  }
+  to{
+    background: transparent;
+
+  }
+}
+
+#flashMessage{
+  animation: yellowfade 5s ease-in-out;
 }
 </style>
